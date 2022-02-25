@@ -82,7 +82,11 @@ bool avilib::AviWriter::open( const char *filename )
 	// must be video or video + audio
 
 	int32_t i_tmp = 0;
+#if cplusplus >= 201703L
+	ofstream::off_type off_tmp;
+#else
 	ofstream::streamoff off_tmp;
+#endif
 
 	for( auto idx_type : m_streamTypes )
 		if( i_tmp++ != idx_type.first )
@@ -97,7 +101,11 @@ bool avilib::AviWriter::open( const char *filename )
 	_f.write( "AVI ", 4 );
 	_f.write( "LIST", 4 );
 
+#if __cplusplus >= 201703L
+	ofstream::pos_type pos_hdrlSize = _f.tellp();
+#else
 	ofstream::streampos pos_hdrlSize = _f.tellp();
+#endif
 	_f.write( (const char *)&NULL32, 4 );
 	_f.write( "hdrl", 4 );
 	pos_aviMainHeader = _f.tellp();
@@ -108,7 +116,11 @@ bool avilib::AviWriter::open( const char *filename )
 	for (int32_t i_stream=0; i_stream<i_streams; i_stream++)
  	{
 		_f.write( "LIST", 4 );
+#if __cplusplus >= 201703L
+		ofstream::pos_type pos_strlSize = _f.tellp();
+#else
 		ofstream::streampos pos_strlSize = _f.tellp();
+#endif
 		_f.write( (const char *)&NULL32, 4 );
 
 		_f.write( "strl", 4 );
@@ -423,7 +435,11 @@ bool avilib::AviWriter::write_data( uint8_t stream_idx, void *data, uint32_t len
 	if( m_RIFF_idx == 0 )
 	{
 		m_RIFF_size += sizeof(avilib::AVIOLDINDEX);
+#if __cplusplus >= 201703L
+		std::ofstream::off_type framePosforOldIndex = _f.tellp();
+#else
 		std::ofstream::streamoff framePosforOldIndex = _f.tellp();
+#endif
 		framePosforOldIndex -= pos_1stMoviStart; // relative to first "movi"
 
 		avilib::AVIOLDINDEX entry;

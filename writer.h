@@ -8,11 +8,19 @@ namespace avilib
 		std::ofstream _f;
 		uint64_t pos_RIFFSize;
 		uint64_t pos_moviListSize;
+#if __cplusplus >= 201703L
+                std::ofstream::off_type pos_odmlExt;
+                std::ofstream::off_type pos_1stMoviStart;
+                std::ofstream::off_type pos_aviMainHeader;
+                std::map<stream_id, std::ofstream::off_type> pos_odmlSuperIdx;
+                std::map<stream_id, std::ofstream::off_type> pos_streamHeader;
+#else
 		std::ofstream::streamoff pos_odmlExt;
 		std::ofstream::streamoff pos_1stMoviStart;
 		std::ofstream::streamoff pos_aviMainHeader;
 		std::map<stream_id, std::ofstream::streamoff> pos_odmlSuperIdx;
 		std::map<stream_id, std::ofstream::streamoff> pos_streamHeader;
+#endif
 
 		std::map<stream_id, avilib::AVISUPERINDEX> m_superIdxs;
 		std::map<stream_id, std::vector<avilib::AVISTDINDEX>> m_stdIndexes;
